@@ -16,6 +16,13 @@ function orders(){
     };
     return payload;
 }
+function customer(){
+    events.emit('pickup',{
+        event:'pickup',
+        time: new Date().toDateString(),
+        payload:order
+    })
+}
 
 function thankYou(payload){
     payload.events='delivered';
@@ -23,5 +30,5 @@ function thankYou(payload){
     console.log('event',payload);
 }
 module.exports={
-    orders,thankYou
+    orders,thankYou,customer
 };

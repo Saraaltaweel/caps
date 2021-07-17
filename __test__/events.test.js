@@ -1,8 +1,8 @@
 'use strict';
 
-const { expect } = require('@jest/globals');
 const driver=require('../driver');
 const vendor=require('../vendor');
+
 console.log=jest.fn();
 
 describe('test the vendor',()=>{
@@ -33,3 +33,4 @@ describe('test the vendor',()=>{
     })
     
 })
+
