@@ -1,36 +1,41 @@
 'use strict';
+require('dotenv').config();
 
-const driver=require('../driver');
-const vendor=require('../vendor');
+const vendor = require('../vendor');
+const fake = require('faker');
+const driver = require('../driver');
 
-console.log=jest.fn();
 
-describe('test the vendor',()=>{
-    const payload={
+describe('Test Event Connectivity',()=>{
+
+    let order = {
+        storeName:process.env.store||'delivery store',
+        orderId:fake.datatype.uuid(),
+        customerName:fake.name.findName(),
+        address:`${fake.address.city()},${fake.address.stateAbbr()}`
+    }
+    let payload = {
         event:'pickup',
-        time:'2020-03-06T18:27:17.732Z',
-        payload:{
-            store: '1-206-flowers',
-            orderID: 'e3669048-7313-427b-b6cc-74010ca1f8f0',
-            customer: 'Jamal Braun',
-            address: 'Schmittfort, LA',
-        },
-    };
+        time :new Date().toDateString(),
+        payload:order
+    }
 
-    it('vendor should console.log',()=>{
-        vendor.thankYou(payload);
-        expect(console.log).toHaveBeenCalled();
+    jest.useFakeTimers();
+    let consoleSpy;
+
+    beforeAll(()=>{
+        consoleSpy=jest.spyOn(console,'log').mockImplementation();
+    })
+    afterAll(()=>{
+        consoleSpy.mokRestore;
     })
 
-    
-    it('driver pickup should console.log',()=>{
+    it('newCustomerOrde()' , ()=>{
+        vendor.newCustomerOrde()
+        expect(consoleSpy).toHaveBeenCalled();
+    })
+    it('pickUp() after 1 sec',()=>{
         driver.pickup(payload);
-        expect(console.log).toHaveBeenCalled();
+        expect(consoleSpy).toHaveBeenCalled();
     })
-    it('driver deliverd should console.log',()=>{
-        driver.deliverd(payload);
-        expect(console.log).toHaveBeenCalled();
-    })
-    
 })
-
