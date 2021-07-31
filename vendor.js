@@ -2,33 +2,35 @@
 
 require('dotenv').config();
 
-const storeName=process.env.STORE_NAME;
+const storeName=process.env.STORE_NAME || 'deliverd';
 const events=require('./events');
 const fake=require('faker');
 
-function orders(){
-    const payload={
+
+    let payload={
         storeName:process.env.STORE_NAME||storeName,
-        orderId:fake.rendom.uuid(),
+        orderId:fake.datatype.uuid(),
         customerName:fake.name.findName(),
         address:fake.address.city(),
 
     };
-    return payload;
-}
-function customer(){
-    events.emit('pickup',{
-        event:'pickup',
-        time: new Date().toDateString(),
-        payload:order
-    })
-}
-
-function thankYou(payload){
-    payload.events='delivered';
-    console.log(`VENDOR: Thank you for delivering ${payload.payload.orderId}`);
-    console.log('event',payload);
-}
-module.exports={
-    orders,thankYou,customer
-};
+    function newCustomerOrde(){
+    
+        console.log('new order to deliver');
+        events.emit('pickup',{
+            event:'pickup',
+            time: new Date().toDateString(),
+            payload:payload
+        })
+    }
+    function thanks(payload){
+        payload.event='delivered';
+        payload.time = new Date().toDateString();
+        console.log(`Thank you for delivering ${payload.payload.orderId}`);
+        console.log('EVENT',payload );
+    }
+    
+    module.exports={
+        newCustomerOrde:newCustomerOrde,
+        thanks:thanks
+    }
